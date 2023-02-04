@@ -1,14 +1,17 @@
 {
   "name": "infra",
   "version": "0.1.0",
+  "license": "MIT",
   "bin": {
     "infra": "bin/infra.js"
   },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "tsc && jest",
     "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy",
     "lint": "eslint --ext ts --fix . -c .eslintrc.yml"
   },
   "devDependencies": {
