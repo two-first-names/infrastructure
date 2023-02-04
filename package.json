@@ -11,7 +11,7 @@
     "test": "tsc && jest",
     "cdk": "cdk",
     "synth": "cdk synth",
-    "deploy": "cdk deploy",
+    "deploy": "cdk deploy --all",
     "lint": "eslint --ext ts --fix . -c .eslintrc.yml"
   },
   "devDependencies": {
