@@ -15,6 +15,11 @@
   notify:
   - restart jool
 
+- name: Add resolv.conf (to avoid DNS64 on Jool instance)
+  copy:
+    src: resolv.conf
+    dest: /etc/
+
 - name: Enable net.ipv4.conf.all.forwarding
   ansible.posix.sysctl:
     name: net.ipv4.conf.all.forwarding
