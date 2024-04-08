@@ -1,8 +1,7 @@
 plugin: community.general.proxmox
 user: root@pam
 token_id: ansible
-url: https://[2a01:4b00:d203:8d00::2]:8006
-validate_certs: false
+url: https://pve-0.engiqueer.net:8006
 want_facts: true
 groups:
   linux: proxmox_tags_parsed is defined and 'linux' in proxmox_tags_parsed

@@ -13,7 +13,6 @@
 - name: Create VM
   proxmox_kvm:
     api_host: pve-0.engiqueer.net
-    validate_certs: false
     api_user: root@pam
     api_token_id: ansible
     api_token_secret: "{{ lookup('env', 'PROXMOX_TOKEN_SECRET') }}"
@@ -26,8 +25,4 @@
 
 - name: Set cicustom
   shell: qm set {{ kvm.vmid }} --cicustom "vendor=local:snippets/cloud-init-{{ hostname }}.sh"
-  when: ansible_host == node and kvm.changed
-
-- name: Start VM
-  shell: qm start {{ kvm.vmid }}
   when: ansible_host == node and kvm.changed
