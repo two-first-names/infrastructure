@@ -1,0 +1,4 @@
+dependencies:
+- role: step/cert
+- role: docker
+- role: nginx

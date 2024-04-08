@@ -1,0 +1,17 @@
+---
+- name: Copy nginx config
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/sites-enabled/{{ inventory_hostname }}
+  notify: Restart nginx
+- name: Create Vaultwarden Docker container
+  community.docker.docker_container:
+    name: vaultwarden
+    image: vaultwarden/server:latest
+    volumes:
+    - /var/vaultwarden:/data   
+    ports:
+    - "[::1]:8080:80"
+    env:
+      ADMIN_TOKEN: $argon2id$v=19$m=65540,t=3,p=4$ay9lME9FOXFxRUF2TFZBVUNpbklmcDJEUG1IdmN4RG9mVU9HY3h2UmlyOD0$uBJdbjw2CS9FBjioikwuYfVRG7Y5Xv07EuC5SAA1G78
+    restart_policy: always

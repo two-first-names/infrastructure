@@ -19,3 +19,7 @@
   become: yes
   roles:
   - jool
+- hosts: vault.engiqueer.net
+  become: yes
+  roles:
+  - vaultwarden
