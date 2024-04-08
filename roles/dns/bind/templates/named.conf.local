@@ -1,0 +1,14 @@
+zone "engiqueer.net" IN {
+  type master;
+  file "engiqueer.net.zone";
+  allow-update { none; };
+};
+
+{% for cidr in cidrs %}
+zone "{{ cidr | ansible.utils.ipaddr('revdns') | regex_replace('^(0\\.)+', '') }}" IN {
+  type master;
+  file "{{ cidr | ansible.utils.ipaddr('revdns') | regex_replace('^(0\\.)+', '') }}zone";
+  allow-update { none; };
+};
+
+{% endfor%}

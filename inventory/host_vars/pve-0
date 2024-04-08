@@ -1,0 +1,4 @@
+inventory_hostname: pve-0.engiqueer.net
+ip_addresses:
+- "2a01:4b00:d203:8d00::2"
+public_ipv6_address: "2a01:4b00:d203:8d00::2"

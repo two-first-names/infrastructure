@@ -1,0 +1,16 @@
+#cloud-config
+hostname: "{{ hostname | split('.') | first }}"
+manage_etc_hosts: true
+fqdn: "{{ hostname }}"
+user: admin
+users:
+- default
+package_upgrade: true
+write_files:
+- path: /root/init.sh
+  permissions: '0755'
+  content: |
+    {{ lookup('ansible.builtin.template', 'cloud-init.sh') | indent(4) }}
+
+runcmd:
+- bash /root/init.sh

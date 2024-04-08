@@ -1,0 +1,17 @@
+- hosts: ns1.engiqueer.net
+  become: yes
+  roles:
+  - dns/bind
+- hosts: dns.engiqueer.net
+  become: yes
+  roles:
+  - dns/unbound
+- hosts: ca.engiqueer.net
+  become: yes
+  roles:
+  - step-ca
+- hosts: linux
+  become: yes
+  roles:
+  - step
+  - ssh

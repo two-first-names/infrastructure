@@ -1,0 +1,47 @@
+- name: Install bind9
+  apt:
+    name: bind9
+    state: present
+
+- name: Add engiqueer.net zone file
+  template:
+    src: engiqueer.net.zone
+    dest: /var/cache/bind/
+  notify:
+  - restart bind9
+
+- name: Add revdns zone files
+  template:
+    src: revdns.zone
+    dest: /var/cache/bind/{{ item | ansible.utils.ipaddr('revdns') | regex_replace('^(0\.)+', '') }}zone
+  notify:
+  - restart bind9
+  vars:
+    cidr: "{{item}}"
+  loop: "{{ cidrs }}"
+
+- name: Add named.conf.options
+  copy:
+    src: named.conf.options
+    dest: /etc/bind/named.conf.options
+  notify:
+  - restart bind9
+
+- name: Add named.conf.local
+  template:
+    src: named.conf.local
+    dest: /etc/bind/named.conf.local
+  notify:
+  - restart bind9
+
+- name: Stop systemd-resolved
+  service:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+
+- name: Enable bind9
+  service:
+    name: bind9
+    state: started
+    enabled: yes

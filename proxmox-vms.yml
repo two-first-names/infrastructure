@@ -1,0 +1,4 @@
+- hosts: proxmox_nodes
+  roles:
+  - role: proxmox/vm
+    hostname: ns1.engiqueer.net

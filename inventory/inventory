@@ -1,0 +1,5 @@
+engiqueer.net
+opnsense.engiqueer.net
+
+[linux]
+pve-0 ansible_user=root

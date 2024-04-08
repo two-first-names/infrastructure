@@ -1,0 +1,33 @@
+---
+- name: Get token from step-ca for host
+  delegate_to: localhost
+  become: no
+
+  command: step ca token {{ hostname }}
+  register: token
+
+- name: Create CSR
+  command: step certificate create --no-password --insecure --csr --force {{ hostname }} /etc/ssl/{{hostname}}.csr /etc/ssl/private/{{hostname}}.key
+  args:
+    creates: /etc/ssl/{{hostname}}.csr
+
+- name: Sign CSR
+  command: step ca sign --token {{ token.stdout }} --force /etc/ssl/{{hostname}}.csr /etc/ssl/certs/{{hostname}}.crt
+  args:
+    creates: /etc/ssl/certs/{{hostname}}.crt
+
+- name: Copy cert-renewer.service
+  copy:
+    src: cert-renewer.service
+    dest: /etc/systemd/system/cert-renewer@.service
+
+- name: Copy cert-renewer.timer
+  copy:
+    src: cert-renewer.timer
+    dest: /etc/systemd/system/cert-renewer@.timer
+
+- name: Start cert-renewer
+  service:
+    name: cert-renewer@{{ hostname }}.timer
+    state: started
+    enabled: yes

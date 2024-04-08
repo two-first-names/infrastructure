@@ -1,0 +1,35 @@
+- name: Check if step binary exists
+  stat:
+    path: "/tmp/step-ca_linux_amd64.tar.gz"
+  register: result
+
+- name: Download step binary
+  get_url:
+    url: "https://github.com/smallstep/cli/releases/download/v0.26.0/step_linux_amd64.tar.gz"
+    dest: "/tmp/step_linux_amd64.tar.gz"
+    mode: '0755'
+    timeout: 30
+  when: not result.stat.exists
+
+- name: Unarchive step binary
+  unarchive:
+    remote_src: yes
+    src: /tmp/step_linux_amd64.tar.gz
+    dest: /tmp
+
+- name: Link binaries to correct version
+  copy:
+    src: "/tmp/step_linux_amd64/bin/step"
+    remote_src: yes
+    dest: "/usr/bin/step"
+    mode: a+x
+
+- name: Bootstrap step
+  command: step ca bootstrap --ca-url https://ca.engiqueer.net --fingerprint {{ step_ca_fingerprint }} --force
+  args:
+    creates: /root/.step/config/defaults.json
+  register: bootstrap
+
+- name: Install root CA certificate
+  shell: step certificate install $(step path)/certs/root_ca.crt
+  when: bootstrap.changed

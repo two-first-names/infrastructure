@@ -1,0 +1,17 @@
+@ SOA ns1.engiqueer.net. hostmaster.engiqueer.net (
+  {{ dns_serial }} ; Serial
+  8h         ; Refresh
+  30m        ; Retry
+  1w         ; Expire
+  1h )       ; Negative Cache TTL
+
+  NS ns1.engiqueer.net.
+
+{% for host in groups['all'] %}
+{% for ip_address in hostvars[host].ip_addresses | ansible.utils.ipaddr(cidr) %}
+{{ ip_address | ansible.utils.ipaddr('revdns') }} PTR {{ hostvars[host].inventory_hostname }}.
+{% for hostname in hostvars[host].additional_hostnames %}
+{{ ip_address | ansible.utils.ipaddr('revdns') }} PTR {{ hostname }}.
+{% endfor %}
+{% endfor %}
+{% endfor %}

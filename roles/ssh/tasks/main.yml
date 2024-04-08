@@ -1,0 +1,38 @@
+---
+- name: Check if host certificate exists
+  stat:
+    path: "/etc/ssh/ssh_host_ecdsa_key-cert.pub"
+  register: cert
+
+- name: Get token from step-ca for host
+  delegate_to: localhost
+  become: no
+
+  command: step ca token --ssh --host {{ hostname }}
+  when: not cert.stat.exists
+  register: token
+
+- name: Sign SSH Key
+  command: step ssh certificate --token {{ token.stdout }} --host --sign {{ hostname }} /etc/ssh/ssh_host_ecdsa_key.pub
+  when: not cert.stat.exists
+  notify:
+  - restart ssh
+
+- name: Copy SSH CA
+  shell: step ssh config --roots > /etc/ssh/ssh_user_key.pub
+  args:
+    creates: /etc/ssh/ssh_user_key.pub
+  notify:
+  - restart ssh
+
+- name: Copy SSH config
+  copy:
+    src: ssh_ca.conf
+    dest: /etc/ssh/sshd_config.d/ssh_ca.conf
+  notify:
+  - restart ssh
+
+- name: Copy renewal cronjob
+  copy:
+    src: rotate-ssh-certificate
+    dest: /etc/cron.weekly/rotate-ssh-certificate

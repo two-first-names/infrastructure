@@ -1,0 +1,13 @@
+plugin: community.general.proxmox
+user: root@pam
+token_id: ansible
+url: https://[2a01:4b00:d203:8d00::2]:8006
+validate_certs: false
+want_facts: true
+groups:
+  linux: proxmox_tags_parsed is defined and 'linux' in proxmox_tags_parsed
+  debian: proxmox_tags_parsed is defined and 'debian' in proxmox_tags_parsed
+compose:
+  ansible_user: proxmox_ciuser
+  ip_addresses: proxmox_agent_interfaces | selectattr('name', 'match', 'eth|ens') | map(attribute='ip-addresses') | flatten | ansible.utils.ipaddr('address')
+  public_ipv6_address: proxmox_agent_interfaces | selectattr('name', 'match', 'eth|ens') | map(attribute='ip-addresses') | flatten | ansible.utils.ipaddr('address') | ansible.utils.ipaddr('2000::/3') | last

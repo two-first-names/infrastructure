@@ -1,0 +1,20 @@
+@ SOA ns1.engiqueer.net. hostmaster (
+  {{ dns_serial }} ; Serial
+  8h         ; Refresh
+  30m        ; Retry
+  1w         ; Expire
+  1h )       ; Negative Cache TTL
+
+  NS ns1.engiqueer.net.
+
+{% for host in groups['all'] %}
+{% if 'public_ipv6_address' in hostvars[host] %}
+{{ hostvars[host].inventory_hostname }}. AAAA {{ hostvars[host].public_ipv6_address }}
+{% for hostname in hostvars[host].additional_hostnames %}
+{{ hostname}}. AAAA {{ hostvars[host].public_ipv6_address }}
+{% endfor %}
+
+{% endif %}
+{% endfor -%}
+
+pve.engiqueer.net. CNAME pve-0.engiqueer.net.

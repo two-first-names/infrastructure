@@ -1,0 +1,24 @@
+---
+- name: Install Unbound
+  apt:
+    name: unbound
+    state: present
+
+- name: Add unbound.conf
+  template:
+    src: unbound.conf
+    dest: /etc/unbound/unbound.conf.d/unbound.conf
+  notify:
+  - restart unbound
+
+- name: Stop systemd-resolved
+  service:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+
+- name: Start unbound
+  service:
+    name: unbound
+    state: started
+    enabled: yes

@@ -1,0 +1,5 @@
+today: "{{ lookup('pipe','date +%Y%m%d') }}"
+epoch_midnight: "{{ lookup('pipe','date --date={{ today }} +%s') }}"
+num_secs: "{{ lookup('pipe','date +%s')|int - epoch_midnight|int }}"
+day_incr: "{{ (num_secs|int * 99 / 86400)|int }}"
+dns_serial : "{{ today }}{{ day_incr }}"
