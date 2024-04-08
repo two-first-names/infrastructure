@@ -1,0 +1,4 @@
+dependencies:
+- role: step/cert
+  hostname: pve.engiqueer.net
+- role: nginx

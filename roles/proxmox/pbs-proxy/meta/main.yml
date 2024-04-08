@@ -1,0 +1,4 @@
+dependencies:
+- role: step/cert
+  hostname: backups.engiqueer.net
+- role: nginx

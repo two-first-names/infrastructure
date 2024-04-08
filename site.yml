@@ -23,3 +23,11 @@
   become: yes
   roles:
   - vaultwarden
+- hosts: pve-0
+  become: yes
+  roles:
+  - proxmox/pve-proxy
+- hosts: backups.engiqueer.net
+  become: yes
+  roles:
+  - proxmox/pbs-proxy

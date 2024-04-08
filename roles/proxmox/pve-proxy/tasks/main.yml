@@ -1,0 +1,6 @@
+- name: Copy nginx config
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/sites-enabled/{{ inventory_hostname }}
+  notify:
+  - Restart nginx
