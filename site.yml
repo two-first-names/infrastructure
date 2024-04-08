@@ -15,3 +15,7 @@
   roles:
   - step
   - ssh
+- hosts: jool.engiqueer.net
+  become: yes
+  roles:
+  - jool

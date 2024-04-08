@@ -2,3 +2,5 @@
   roles:
   - role: proxmox/vm
     hostname: ns1.engiqueer.net
+  - role: proxmox/vm
+    hostname: jool.engiqueer.net

@@ -1,0 +1,38 @@
+- name: Install Linux headers
+  apt:
+    name: linux-headers-{{ ansible_kernel }}
+
+- name: Install Jool
+  apt:
+    name:
+    - jool-dkms
+    - jool-tools
+
+- name: Add jool.conf
+  copy:
+    src: jool.conf
+    dest: /etc/jool/
+  notify:
+  - restart jool
+
+- name: Enable net.ipv4.conf.all.forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.all.forwarding
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Enable net.ipv6.conf.all.forwarding
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  
+- name: Start Jool
+  service:
+    name: jool
+    state: started
+    enabled: yes
