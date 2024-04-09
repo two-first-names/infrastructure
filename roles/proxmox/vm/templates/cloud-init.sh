@@ -5,13 +5,14 @@ mv step_linux_amd64/bin/step /usr/bin/
 
 step ca bootstrap --ca-url https://ca.engiqueer.net/ --fingerprint {{ step_ca_fingerprint }}
 
+ssh-keygen -q -N "" -t ecdsa -f /etc/ssh/ssh_host_key
 step ssh config --roots > /etc/ssh/ssh_user_key.pub
-step ssh certificate --token {{ token.stdout}} --host --sign {{ hostname }} /etc/ssh/ssh_host_ecdsa_key.pub
+step ssh certificate --token {{ token.stdout}} --host --sign {{ hostname }} /etc/ssh/ssh_host_key.pub
 
 cat <<EOF > /etc/ssh/sshd_config.d/ssh_ca.conf
 TrustedUserCAKeys /etc/ssh/ssh_user_key.pub
-HostKey /etc/ssh/ssh_host_ecdsa_key
-HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
+HostKey /etc/ssh/ssh_host_key
+HostCertificate /etc/ssh/ssh_host_key-cert.pub
 EOF
 
 systemctl restart sshd

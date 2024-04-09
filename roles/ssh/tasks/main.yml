@@ -1,20 +1,28 @@
 ---
 - name: Check if host certificate exists
   stat:
-    path: "/etc/ssh/ssh_host_ecdsa_key-cert.pub"
+    path: "/etc/ssh/ssh_host_key-cert.pub"
   register: cert
+
+- name: Generate SSH Key
+  openssh_keypair:
+    path: /etc/ssh/ssh_host_key
+    type: ecdsa
+  register: ssh_key
+  notify:
+  - restart ssh
 
 - name: Get token from step-ca for host
   delegate_to: localhost
   become: no
 
   command: step ca token --ssh --host {{ hostname }}
-  when: not cert.stat.exists
+  when: not cert.stat.exists or ssh_key.changed
   register: token
 
 - name: Sign SSH Key
-  command: step ssh certificate --token {{ token.stdout }} --host --sign {{ hostname }} /etc/ssh/ssh_host_ecdsa_key.pub
-  when: not cert.stat.exists
+  command: step ssh certificate --force --token {{ token.stdout }} --host --sign {{ hostname }} /etc/ssh/ssh_host_key.pub
+  when: not cert.stat.exists or ssh_key.changed
   notify:
   - restart ssh
 
